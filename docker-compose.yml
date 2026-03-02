@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+
+  database:
+    image: mysql:8
+    container_name: mysql_container
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: testdb
+
+  backend:
+    build: ./backend
+    container_name: backend_container
+    depends_on:
+      - database
+
+  frontend:
+    image: nginx:latest
+    container_name: nginx_container
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+      - ./frontend/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
